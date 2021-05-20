@@ -110,7 +110,8 @@ def createSection(course="", sectionid="", types="", scheduleStart=None, schedul
         string = "Please fill out all required entries"
         return string
     formattedDays = formatDays(scheduleDays)
-    if not (not course) and not (not sectionid) and not (not types) and not (not scheduleStart) and not (not scheduleEnd) and not (not formattedDays):
+    if not (not course) and not (not sectionid) and not (not types) and not (not scheduleStart) and not (
+    not scheduleEnd) and not (not formattedDays):
         if len(list(Section.objects.filter(sectionid=sectionid))) == 0:
             Section.objects.create(course=course, sectionid=sectionid, type=types, scheduleStart=scheduleStart,
                                    scheduleEnd=scheduleEnd, scheduleDays=formattedDays)
@@ -149,6 +150,7 @@ def deleteCourse(courseid=""):
         string = "Course with ID " + courseid + " has been deleted"
     return string
 
+
 def manage_registration(request):
     # precondition: request is provided
     # postcondition: redirect is handled along with the proper session
@@ -164,6 +166,7 @@ def manage_registration(request):
             request.session["sectionid"] = request.POST["assign_TA_to_Section"]
             return redirect(dict[key])
 
+
 def manage_deletion(request):
     # precondition: request is provided
     # postcondition: confirmation for the deletion is returned
@@ -176,6 +179,7 @@ def manage_deletion(request):
             message = dict2[key](request.POST.get(key))
     return message
 
+
 def deleteSection(sectionid=""):
     # precondition: section with unique sectionid exists
     # postcondition: section with unique sectionid is removed from database and a message is returned if sectionid is not entered,
@@ -185,8 +189,12 @@ def deleteSection(sectionid=""):
     elif sectionid not in list(i["sectionid"] for i in Section.objects.all().values("sectionid")):
         string = "Section with that ID does not exist"
     else:
-        Section.objects.get(sectionid=sectionid).delete()
-        string = "Section with ID " + sectionid + " has been deleted"
+        section = Section.objects.get(sectionid=sectionid)
+    if section.TA_assigned:
+        section.TA_assigned.assignedlabs -= 1
+    section.TA_assigned.save()
+    section.delete()
+    string = "Section with ID " + sectionid + " has been deleted"
     return string
 
 
@@ -217,7 +225,9 @@ def assignTAtoCourse(courseObj="", TAUsername="", numLabs="", graderstatus=False
     else:
         message = ""
         TA.objects.filter(user__username=(User.objects.get(username=TAUsername)).username).update(course=courseObj,
-                               numlabs=numLabs, assignedlabs=0, graderstatus=graderstatus)
+                                                                                                  numlabs=numLabs,
+                                                                                                  assignedlabs=0,
+                                                                                                  graderstatus=graderstatus)
     return message
 
 
