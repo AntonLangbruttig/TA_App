@@ -39,17 +39,18 @@ class EditAccount(View):
         user = User.objects.get(username=request.session["account"])
         request.session["account"] = ""
 
-        return render(request, "edit_account.html", {"user": user, "days": allDays(user.officehoursDays), "officeStart": user.officehoursStart.__str__(), "officeEnd": user.officehoursEnd.__str__()})
-
+        return render(request, "edit_account.html", {"user": user, "days": allDays(user.officehoursDays),
+                                                     "officeStart": user.officehoursStart.__str__(),
+                                                     "officeEnd": user.officehoursEnd.__str__()})
 
     def post(self, request):
 
         message = editAccount(request.POST['update_account'],
-                            request.POST.get('name'), request.POST.get('password'), request.POST.get('address'),
-                            request.POST.get('phone'), request.POST.get('officenumber'),
-                            request.POST.get('officehoursStart'), request.POST.get('officehoursEnd'),
-                            request.POST.getlist('selectedDays'), request.POST.get('skills'))
-        if message!="":
+                              request.POST.get('name'), request.POST.get('password'), request.POST.get('address'),
+                              request.POST.get('phone'), request.POST.get('officenumber'),
+                              request.POST.get('officehoursStart'), request.POST.get('officehoursEnd'),
+                              request.POST.getlist('selectedDays'), request.POST.get('skills'))
+        if message != "":
             return render(request, "edit_account.html", {"roles": Roles.choices, "message": message})
 
         elif request.session["name"] == request.POST['update_account']:
@@ -83,15 +84,18 @@ class RegisterAccount(View):
         return render(request, "register_account.html", {"roles": Roles.choices, "days": Days.choices})
 
     def post(self, request):
-        message = createAccount(request.POST['username'], request.POST['name'], request.POST['password'], request.POST['email'],
+        message = createAccount(request.POST['username'], request.POST['name'], request.POST['password'],
+                                request.POST['email'],
                                 request.POST['role'], request.POST.get('phone'), request.POST.get('address'),
-                                request.POST.get('officenumber'), request.POST.get('officehoursStart'), request.POST.get('officehoursEnd'),
+                                request.POST.get('officenumber'), request.POST.get('officehoursStart'),
+                                request.POST.get('officehoursEnd'),
                                 request.POST.getlist('selectedDays'), request.POST.get('skills'))
 
         if message.__eq__(""):
             return redirect('/AccountDisplay/')
         else:
-            return render(request, "register_account.html", {"roles": Roles.choices, "days": Days.choices, "message": message})
+            return render(request, "register_account.html",
+                          {"roles": Roles.choices, "days": Days.choices, "message": message})
 
 
 class Courses(View):
@@ -101,15 +105,15 @@ class Courses(View):
                                                     "TAs": list(TA.objects.all()), "user": user})
 
     def post(self, request):
-        m=manage_registration(request)
-        if m!=None:
+        m = manage_registration(request)
+        if m != None:
             return m
         else:
-            message=manage_deletion(request)
+            message = manage_deletion(request)
             user = User.objects.get(username=request.session["name"])
             return render(request, "all_courses.html", {"dictionary": getCourses(),
-                                                            "TAs": list(TA.objects.all()), "message": message,
-                                                            "user": user})
+                                                        "TAs": list(TA.objects.all()), "message": message,
+                                                        "user": user})
 
 
 class RegisterCourses(View):
@@ -137,13 +141,15 @@ class RegisterSection(View):
             request.session["course"] = ""
             return redirect('/Courses/')
         else:
-            return render(request, "register_section.html", {"types": Types.choices, "days": Days.choices, "message": message})
+            return render(request, "register_section.html",
+                          {"types": Types.choices, "days": Days.choices, "message": message})
 
 
 class AssignInstructor(View):
     def get(self, request):
         return render(request, "assign_instructor.html",
-                      {"accounts": list(User.objects.exclude(role="Supervisor").exclude(role="TA")), "totalacc": len(list(User.objects.exclude(role="Supervisor").exclude(role="TA")))})
+                      {"accounts": list(User.objects.exclude(role="Supervisor").exclude(role="TA")),
+                       "totalacc": len(list(User.objects.exclude(role="Supervisor").exclude(role="TA")))})
 
     def post(self, request):
         message = assignInstructor(Course.objects.get(courseid=request.session["course"]),
@@ -154,12 +160,15 @@ class AssignInstructor(View):
         else:
             return render(request, "assign_instructor.html",
                           {"accounts": list(User.objects.exclude(role="Supervisor").exclude(role="TA")),
-                            "totalacc": len(list(User.objects.exclude(role="Supervisor").exclude(role="TA"))), "message": message})
+                           "totalacc": len(list(User.objects.exclude(role="Supervisor").exclude(role="TA"))),
+                           "message": message})
 
 
 class AssignTAToCourse(View):
     def get(self, request):
-        return render(request, "assign_TA_to_course.html", {"TAs": list(TA.objects.filter(course__isnull=True)), "totalTAs": len(list(TA.objects.filter(course__isnull=True)))})
+        return render(request, "assign_TA_to_course.html", {"TAs": list(TA.objects.filter(course__isnull=True)),
+                                                            "totalTAs": len(
+                                                                list(TA.objects.filter(course__isnull=True)))})
 
     def post(self, request):
         message = assignTAtoCourse(Course.objects.get(courseid=request.session["course"]), request.POST.get('UserName'),
@@ -169,13 +178,17 @@ class AssignTAToCourse(View):
             request.session["course"] = ""
             return redirect('/Courses/')
         else:
-            return render(request, "assign_TA_to_course.html", {"TAs": list(TA.objects.filter(course__isnull=True)), "totalTAs": len(list(TA.objects.filter(course__isnull=True))),
+            return render(request, "assign_TA_to_course.html", {"TAs": list(TA.objects.filter(course__isnull=True)),
+                                                                "totalTAs": len(
+                                                                    list(TA.objects.filter(course__isnull=True))),
                                                                 "message": message})
 
 
 class AssignTAToSection(View):
     def get(self, request):
-        return render(request, "assign_TA_to_section.html", {"TAs": getTAsInCourse(request.session["sectionid"]), "courseTAs": len(getTAsInCourse(request.session["sectionid"]))})
+        return render(request, "assign_TA_to_section.html", {"TAs": getTAsInCourse(request.session["sectionid"]),
+                                                             "courseTAs": len(
+                                                                 getTAsInCourse(request.session["sectionid"]))})
 
     def post(self, request):
         message = assignTAtoSection(request.session["sectionid"], request.POST.get('username'))
@@ -186,4 +199,5 @@ class AssignTAToSection(View):
 
         else:
             return render(request, "assign_TA_to_section.html",
-                          {"TAs": getTAsInCourse(request.session["sectionid"]),  "courseTAs": len(getTAsInCourse(request.session["sectionid"])), "message": message})
+                          {"TAs": getTAsInCourse(request.session["sectionid"]),
+                           "courseTAs": len(getTAsInCourse(request.session["sectionid"])), "message": message})
