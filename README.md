@@ -1,48 +1,75 @@
-# TA_App
+# TA Management System
 
-Team 1
-Availability for meeting expectations
-Daily Meeting:
--Less than 15 minute meetings 5:30pm
+A full-stack Django web application for managing teaching assistants, courses, and lab assignments. Built as a team project for the Software Engineering course at UW-Milwaukee.
 
-Long Meeting:
--30 minutes - 1 hour meetings Tuesday at 5:00pm
+## Features
 
-Response time to communication expectations
--Teams(prefered)
--Someone should be able to respond in 30 minutes- 1 hour. Hours: (9:00am - 9:00pm)
+- **User Authentication** — Login system with session management and protected routes
+- **Role-Based Access Control** — Three user roles (Supervisor, Instructor, TA) with different permission levels
+- **Database Design** — 4 related tables with foreign key relationships (Users, Courses, TAs, Sections)
+- **Full CRUD Operations** — Create, read, update, and delete functionality for accounts, courses, and sections
+- **TA Assignment System** — Assign TAs to courses with lab capacity tracking
+- **Course Section Scheduling** — Manage Lecture, Lab, and Discussion sections with scheduling
+- **Comprehensive Unit Tests** — Test coverage for core functionality
 
-Definition of done: when is a task complete? (hint: "I'm done with that but I didn't check it in to github" is not done.)
--When everyone is okay with the code review that has been submitted to the repository as a pull request, and all of the acceptance material from the trello board has been met.
+## Tech Stack
 
-Scrum meeting format/frequency and distribution of documentation tasks (meeting minutes, updating task board)
--Don't waste your time on notes.
--Record meetings.
--Summary at end of meeting.
+- **Backend:** Python, Django
+- **Database:** SQLite
+- **Frontend:** HTML, CSS, Django Templates
+- **Version Control:** Git
 
-How to resolve conflicts:
-After general overview:
--Disagreement on how to implement something: If we have not came to an agreement in 30 minutes (outside of meetings) we will have to take a break on that, look online(youtube tutorial) and then afterwards if no solution by the nest meeting, contact Apoorv or Jayson.
+## User Roles
 
-Procedure for adopting policies (e.g. code style, code check-in steps, documentation updates)
-No eating during the meeting.
-Indentation should be the same for each of us.
-Minimum of two people should participate in the code review and we will choose to commit or not after. Coder + 2 reviewers.
-During all of the meetings, we will update the documents during the meetings. Each person whould initial their notes.
+| Role | Permissions |
+|------|-------------|
+| Supervisor | Full access — manage all users, courses, sections, and assignments |
+| Instructor | View and manage their assigned courses and TAs |
+| TA | View their course assignments and section schedules |
 
-if you adopt such a policy during the initial meeting, put it here
-If someone does not attend the meeting, then they should get in touch with someone who did attend. (provided that they have informed everyone beforehand)
+## Project Structure
 
-Procedure for handling a member who is not meeting expectations
-Missed meeting will require a message to be sent to the person who did not participate.
-Repeated meetings missed will require an email to be sent to the person who did not participate to schedule a meeting to discuss the issue.
-If no response to any of the above in one day, start by contacting TA about the issue.
-If no response to any of the above in two days, start by contacting instructor about the issue.
+```
+TA_App/
+├── TA_APP/
+│   ├── models.py        # Database models (User, Course, TA, Section)
+│   ├── views.py         # View functions for all routes
+│   ├── functions.py     # Business logic and helper functions
+│   └── tests.py         # Unit tests
+├── templates/           # HTML templates
+├── manage.py
+└── README.md
+```
 
-Signatures: 
-Mohammed Yousuf Khan: yk3245385@gmail.com,(414) -243-9503
-Valiantsin Auchynnikau (Val): valov2011@gmail.com (414)339-9819
-Charlie Ellenbecker: charlie.ellenbecker@gmail.com (608)-770-9999
-Anton Langbruttig: antonLangbruttig@gmail.com (920)579-1814
-Bryce Johnson: john4533@uwm.edu (847)732-5249
+## Running Locally
 
+1. Clone the repository
+```bash
+git clone https://github.com/AntonLangbruttig/TA_App.git
+cd TA_App
+```
+
+2. Install dependencies
+```bash
+pip install django
+```
+
+3. Run migrations
+```bash
+python manage.py migrate
+```
+
+4. Start the development server
+```bash
+python manage.py runserver
+```
+
+5. Open http://localhost:8000 in your browser
+
+## Team
+
+Built collaboratively by a team of 5 developers as part of UW-Milwaukee's Software Engineering curriculum.
+
+## License
+
+This project was created for educational purposes at UW-Milwaukee.
